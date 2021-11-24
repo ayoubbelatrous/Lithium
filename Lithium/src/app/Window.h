@@ -9,8 +9,11 @@ private:
 public:
 	Window();
 	~Window();
-
-	void Init(int width = 500, int height = 500);
-	
-
+	void Init(int width, int height);
+	void Run();
+	int shouldClose() const;
+	GLFWwindow* GetWindow()
+	{
+		return _window;
+	}
 };

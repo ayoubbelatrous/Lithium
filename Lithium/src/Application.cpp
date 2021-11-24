@@ -5,10 +5,11 @@
 
 #include "stb/stb_image.h"
 #include "imguizmo/ImGuizmo.h"
-//init function called at the start after initilization of glew and glfw
+
 
 void Application::Init()
 {
+	/*
 	GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA))
 	GLCall(glEnable(GL_BLEND));
 
@@ -27,88 +28,19 @@ void Application::Init()
 		2,3,0
 	};
 
-	VertexArray va;
-	VertexBufferLayout lay;
-	lay.Push<float>(2);
-	lay.Push<float>(2);
-	vb = new VertexBuffer(positions, sizeof(positions));
-	ib = new IndexBuffer(index, 6);
-	va.AddBuffer(*vb, lay);
-	va.Bind();
-	ib->Bind();
-
-
-
-
-	model = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
-	glm::translate(glm::mat4(1.0f),glm::vec3(0, -1.0f, 0));
-	glm::mat4 mvp = proj * view * model;
-	hi = Shader::Load("src/shaders/main.shader");
-	tex = new Texture("src/images/check.png");
-	tex->Bind();
-	hi->Bind();
-	pos = glm::vec3(0);
-	orthosize = 1;
-	sca = glm::vec3(1);
-	background = glm::vec4(0.0f);
-	draw = true;
-
-	viewportSize = glm::vec2(0);
+	*/
+	_window = Window();
+	_window.Init(500,500);
+	glewInit();
 }
 void Application::Render()
 {
-	if (draw)
-	{
-	fb->Bind();
-	glClearColor(background.r, background.g, background.b, background.a);
-	glClear(GL_COLOR_BUFFER_BIT);
-	
-
-	float aspectRatio = prev.x / prev.y;
-
-	float orthoLeft = -orthosize * aspectRatio * 0.5f;
-	float orthoRight = orthosize * aspectRatio * 0.5f;
-	float orthoBottom = -orthosize * 0.5f;
-	float orthoTop = orthosize * 0.5f;
-
-
-
-	view = glm::translate(glm::mat4(1.0f), glm::vec3(mouse[0] / 100,mouse[1] / 100, 0));
-	
-	proj = glm::ortho(orthoLeft, orthoRight, orthoBottom, orthoTop);
-
-	model = glm::translate(glm::mat4(1.0f), pos);
-
-	model = glm::scale(model, sca);
-
-	glm::mat4 mvp = proj * view * model;
-
-
-	if (prev.x != viewportSize.x || prev.y != viewportSize.y)
-	{
-		
-		fb->resize((int)prev.x, (int)prev.y);
-		prev = viewportSize;
-	}
-
-
-
-	hi->SetUniformMat4f("MVP", mvp);
-	hi->SetUniform4f("u_color", glm::vec4(1.0, 1.0, 1.0, 1.0));
-	GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
-
-
-
-
-
-
-
-	fb->UnBind();
-
-}
+	_window.Run();
 	
 }
 
+
+/*
 void Application::UIRender()
 {
 	
@@ -166,12 +98,14 @@ void Application::UIRender()
 	ImGui::End();
 
 }
+*/
 
 void Application::Delete()
 {
-	delete(vb);
-	delete(ib);
-	delete(hi);
-	delete(tex);
-	delete(fb);
+	glfwTerminate();
+}
+
+int Application::shouldClose() const
+{
+	return _window.shouldClose();
 }

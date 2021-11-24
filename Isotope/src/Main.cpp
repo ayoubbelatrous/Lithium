@@ -1,16 +1,42 @@
-#include <GL/glew.h>
-#include <glfw3.h>
+#include "isotope.h"
 
-#include <iostream>
-#include "Application.h"
+int main(void)
+{
+	isotope iso;
+	Application app;
+	app.Init();
+	iso.SetWindow(app.GetWindow());
+	iso.Init();
+	
+	while (!app.shouldClose())
+	{
+		
+		iso.Render();
+		app.Render();
+	}
 
-#include "imgui/imgui.h"
-#include "imgui/imgui_impl_glfw.h"
-#include "imgui/imgui_impl_opengl3.h"
-#include <stdio.h>
+	app.Delete();
+	iso.Delete();
+}
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 int main(void)
 {
 	GLFWwindow* window;
@@ -24,7 +50,7 @@ int main(void)
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 
-	/* Create a windowed mode window and its OpenGL context */
+	/ * Create a windowed mode window and its OpenGL context * /
 	window = glfwCreateWindow(1000, 1000, "Lithium", NULL, NULL);
 	if (!window)
 	{
@@ -101,11 +127,11 @@ int main(void)
 	style->Colors[ImGuiCol_PlotHistogram] = ImVec4(0.40f, 0.39f, 0.38f, 0.63f);
 	style->Colors[ImGuiCol_PlotHistogramHovered] = ImVec4(0.25f, 1.00f, 0.00f, 1.00f);
 	style->Colors[ImGuiCol_TextSelectedBg] = ImVec4(0.25f, 1.00f, 0.00f, 0.43f);
-	/*
+	/ *
 
 		io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Montserrat-Bold.ttf", 12);
 		io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Montserrat-Bold.ttf", 10);
-		io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Montserrat-Bold.ttf", 14);*/
+		io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Montserrat-Bold.ttf", 14);* /
 	io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Inter-VariableFont_slnt,wght.ttf", 15);
 
 	GLenum err = glewInit();
@@ -205,4 +231,4 @@ int main(void)
 	ImGui::DestroyContext();
 
 	return 0;
-}
+}*/
