@@ -3,38 +3,25 @@
 #include <string> 
 #include <sstream>
 
-#include "stb/stb_image.h"
-#include "imguizmo/ImGuizmo.h"
 
 
 void Application::Init()
 {
-	/*
-	GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA))
-	GLCall(glEnable(GL_BLEND));
 
-	fb = new FrameBuffer();
-	std::cout << "Initilized window" << std::endl;
-
-	float positions[] =
-	{ -0.5f ,-0.5f ,0.0f, 0.0f,
-		0.5f,-0.5f ,1.0f, 0.0f,
-		0.5f ,0.5f ,1.0f, 1.0f,
-		-0.5f,0.5f ,0.0f, 1.0f,
-	};
-	unsigned int index[] =
-	{
-		0,1,2,
-		2,3,0
-	};
-
-	*/
+	
+	
 	_window = Window();
+
 	_window.Init(500,500);
 	glewInit();
+
+
+	std::cout << glGetString(GL_VERSION) << std::endl;
 }
 void Application::Render()
 {
+	
+	
 	_window.Run();
 	
 }

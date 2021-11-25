@@ -1,7 +1,7 @@
 #shader vertex
 #version 330 core
 
-layout (location = 0) in vec4 pos;
+layout(location = 0) in vec4 pos;
 layout(location = 1) in vec2 vertexUV;
 
 out vec2 UV;
@@ -16,7 +16,7 @@ void main()
 #shader fragment
 #version 330 core
 
-layout (location = 0) out vec4 col;
+layout(location = 0) out vec4 col;
 
 in vec2 UV;
 
@@ -27,10 +27,10 @@ uniform sampler2D u_texture;
 void main()
 {
     vec4 texColor = texture(u_texture, UV);
-    
-     col = texColor * u_color;
-     return;
-   
+
+    col = texColor * u_color;
+    return;
+
     col = u_color;
 };
 

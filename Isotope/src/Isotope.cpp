@@ -4,6 +4,8 @@
 
 void isotope::Init()
 {
+	  
+
 	ImGui::CreateContext();
 
 
@@ -44,7 +46,7 @@ void isotope::Init()
 	style->Colors[ImGuiCol_FrameBgActive] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
 	style->Colors[ImGuiCol_TitleBg] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
 	style->Colors[ImGuiCol_TitleBgCollapsed] = ImVec4(1.00f, 0.98f, 0.95f, 0.75f);
-	style->Colors[ImGuiCol_TitleBgActive] = ImVec4(0.07f, 0.07f, 0.09f, 1.00f);
+	style->Colors[ImGuiCol_TitleBgActive] = ImVec4(0.0f, 0.294f, 0.42f,1.0f);
 	style->Colors[ImGuiCol_MenuBarBg] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
 	style->Colors[ImGuiCol_ScrollbarBg] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
 	style->Colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.80f, 0.80f, 0.83f, 0.31f);
@@ -69,25 +71,99 @@ void isotope::Init()
 	style->Colors[ImGuiCol_PlotHistogram] = ImVec4(0.40f, 0.39f, 0.38f, 0.63f);
 	style->Colors[ImGuiCol_PlotHistogramHovered] = ImVec4(0.25f, 1.00f, 0.00f, 1.00f);
 	style->Colors[ImGuiCol_TextSelectedBg] = ImVec4(0.25f, 1.00f, 0.00f, 0.43f);
-	
 
-	io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Montserrat-Bold.ttf", 12);
-	io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Montserrat-Bold.ttf", 10);
-	io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Montserrat-Bold.ttf", 14);
+
 	io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Inter-VariableFont_slnt,wght.ttf", 15);
 
 
 	static ImGuiID dockspaceID = 0;
 
 
+	/*float positions[] =
+	{ -0.5f ,-0.5f ,0.0f, 0.0f,
+		0.5f,-0.5f ,1.0f, 0.0f,
+		0.5f ,0.5f ,1.0f, 1.0f,
+		-0.5f,0.5f ,0.0f, 1.0f,
+	};*/
+
+	float positions[] = {
+	  -0.5f, -0.5f, 0.0f, 0.0f, // 0
+	   0.5f, -0.5f, 1.0f, 0.0f, // 1
+	   0.5f,  0.5f, 1.0f, 1.0f, // 2
+	  -0.5f,  0.5f, 0.0f, 1.0f
+	};
+	unsigned int index[] = {
+		0, 1, 2,
+		2, 3, 0
+	};
+
+	va = CreateRef<VertexArray>();
+	lay = CreateRef<VertexBufferLayout>();
+
+	lay->Push<float>(2);
+	lay->Push<float>(2);
+
+	buf = CreateRef<VertexBuffer>(positions, sizeof(positions));
+	ibuf = CreateRef<IndexBuffer>(index,sizeof(index) / 4);
+	tex = CreateRef<Texture>("src/images/check.png");
+	va->Bind();
+	
+	
+	buf->Bind();
+	va->AddBuffer(*buf, *lay);
+	
+	fb = Lithium::CreateRef<FrameBuffer>();
+	fb->Bind();
+	shader = Lithium::CreateRef<Shader>("src/shaders/main.shader");
+
+	shader->Bind();
 
 	
+	view = glm::translate(glm::mat4(1), glm::vec3(0));
+	model = glm::translate(glm::mat4(1), glm::vec3(0));
+	
+
+	
+	
+	shader->SetUniform1i("u_texture", 0);
+
+
 }
 
 void isotope::Render()
 {
+
+	float aspect = width / height;
+	float size = 5;
+	float orthoLeft = -size * aspect * 0.5f;
+	float orthoRight = size * aspect * 0.5f;
+	float orthoBottom = -size * 0.5f;
+	float orthoTop = size * 0.5f;
+
+	proj = glm::ortho(orthoLeft, orthoRight, orthoBottom, orthoTop);
+	MVP = proj * view * model;
+
+	fb->Bind();
 	
-	UIrender();
+	
+	Renderer::ClearColor(glm::vec4(0.2, 0.2, 0.5, 1.0));
+	Renderer::Clear();
+
+	if (prevsize.x != width || prevsize.y != height)
+	{
+		fb->resize(width, height);
+		prevsize = ImVec2(width, height);
+	}
+	shader->Bind();
+	shader->SetUniformMat4f("MVP", MVP);
+	shader->SetUniform4f("u_color", glm::vec4(1));
+	tex->Bind();
+	va->Bind();
+	ibuf->Bind();
+
+
+	Renderer::Draw(6);
+	fb->UnBind();
 }
 
 void isotope::Delete()
@@ -149,18 +225,29 @@ void isotope::UIrender()
 	ImGui::End();
 
 
-
+	
 	ImGui::Begin("hi");
+	ImVec2 vec = ImGui::GetContentRegionAvail();
+	width = vec.x;
+	height = vec.y;
+
+
+	
+	ImGui::Image((void*)(intptr_t)fb->GetColorAttachmentID(), ImVec2{vec.x,vec.y});
 	ImGui::End();
+
+
+	ImGui::Begin("Stats");
+	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+	ImGui::End();
+
 
 
 
 
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-
-
+	
 
 	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 	{
@@ -169,5 +256,8 @@ void isotope::UIrender()
 		ImGui::RenderPlatformWindowsDefault();
 		glfwMakeContextCurrent(backup_current_context);
 	}
+
+
+
 }
 
