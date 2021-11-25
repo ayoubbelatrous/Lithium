@@ -1,11 +1,10 @@
 #include "isotope.h"
 
 
-
 void isotope::Init()
 {
-	  
 
+	scene = CreateRef<Scene>();
 	ImGui::CreateContext();
 
 
@@ -126,12 +125,20 @@ void isotope::Init()
 	
 	
 	shader->SetUniform1i("u_texture", 0);
+	
+	Entity entity = scene->CreateEntity();
+	entity.AddComponent<TransformComponent>(glm::mat4(1));
 
-
+	if (entity.HasComponent<TransformComponent>())
+	{
+		glm::mat4& t = entity.GetComponent<TransformComponent>()._transform;
+		
+		std::cout << "got entt" << std::endl;
+	}
 }
 
 void isotope::Render()
-{
+{	
 
 	float aspect = width / height;
 	float size = 5;
@@ -151,7 +158,7 @@ void isotope::Render()
 
 	if (prevsize.x != width || prevsize.y != height)
 	{
-		fb->resize(width, height);
+		fb->resize(width / 2, height / 2);
 		prevsize = ImVec2(width, height);
 	}
 	shader->Bind();

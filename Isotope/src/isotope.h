@@ -4,30 +4,21 @@
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
-#include <memory>
+#include "Scene/Scene.h"
+#include "Scene/Entity.h"
 
 
+struct TransformComponent {
 
+	glm::mat4 _transform;
+	TransformComponent() = default;
+	TransformComponent(const TransformComponent&) = default;
+	TransformComponent(const glm::mat4& transform)
+		:_transform(transform) {}
+	operator const glm::mat4& () const { return _transform; }
+	operator glm::mat4& () { return _transform; }
+};
 
-namespace Lithium {
-
-	template<typename T>
-	using Scope = std::unique_ptr<T>;
-	template<typename T, typename ... Args>
-	constexpr Scope<T> CreateScope(Args&& ... args)
-	{
-		return std::make_unique<T>(std::forward<Args>(args)...);
-	}
-
-	template<typename T>
-	using Ref = std::shared_ptr<T>;
-	template<typename T, typename ... Args>
-	constexpr Ref<T> CreateRef(Args&& ... args)
-	{
-		return std::make_shared<T>(std::forward<Args>(args)...);
-	}
-
-}
 
 using namespace Lithium;
 class isotope
@@ -60,7 +51,7 @@ public:
 	ImVec2 prevsize;
 
 	ImDrawData *data;
-
-
+	Ref<Scene> scene;
+	
 
 };
