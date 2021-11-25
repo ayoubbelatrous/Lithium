@@ -1,16 +1,17 @@
 #shader vertex
 #version 330 core
 
-layout(location = 0) in vec4 pos;
-layout(location = 1) in vec2 vertexUV;
+layout(location = 0) in vec3 pos;
+layout(location = 1) in vec4 color;
 
-out vec2 UV;
+
+out vec4 Color;
 uniform mat4 MVP;
 
 void main()
 {
-    gl_Position = MVP * pos;
-    UV = vertexUV;
+    gl_Position = vec4(pos,1.0);
+    Color = color;
 };
 
 #shader fragment
@@ -18,19 +19,15 @@ void main()
 
 layout(location = 0) out vec4 col;
 
-in vec2 UV;
 
-uniform vec4 u_color;
+in vec4 Color;
 
-uniform sampler2D u_texture;
 
 void main()
 {
-    vec4 texColor = texture(u_texture, UV);
 
-    col = texColor * u_color;
-    return;
 
-    col = u_color;
+   col = Color;
+
 };
 

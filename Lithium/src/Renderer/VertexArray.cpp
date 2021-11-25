@@ -5,6 +5,7 @@
 VertexArray::VertexArray()
 {
 	glGenVertexArrays(1, &_id);
+	Bind();
 }
 
 VertexArray::~VertexArray()
@@ -19,7 +20,9 @@ void VertexArray::UnBind() const
 
 void VertexArray::Bind() const
 {
+	
 	glBindVertexArray(_id);
+	_ibo.Bind();
 }
 
 void VertexArray::AddBuffer(const VertexBuffer& vb, const VertexBufferLayout& layout)
@@ -37,5 +40,11 @@ void VertexArray::AddBuffer(const VertexBuffer& vb, const VertexBufferLayout& la
 		GLCall(glVertexAttribPointer(i, element.count,element.type , false, layout.GetStride(), (const void*) offset));
 		offset += element.count * VertexBufferElement::GetSizeOfType(element.type);
 	}
+}
+
+void VertexArray::AddIndexBuffer(const IndexBuffer& ibo)
+{
+	
+	_ibo = ibo;
 }
 

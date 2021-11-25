@@ -1,7 +1,6 @@
 #pragma once
 #include <iostream>
 #include "Renderer/Shader.h"
-#include "Renderer/Renderer.h"
 #include "Renderer/VertexBuffer.h"
 #include "Renderer/IndexBuffer.h"
 #include "Renderer/VertexArray.h"
@@ -16,6 +15,10 @@
 #include "app/Window.h"
 #include "imguizmo/ImGuizmo.h"
 #include "GL/glew.h"
+
+
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/quaternion.hpp>
 
 
 

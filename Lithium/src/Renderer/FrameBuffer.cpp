@@ -14,7 +14,7 @@ FrameBuffer::FrameBuffer()
 
 	
 	glGenTextures(1, &renderedTexture);
-	GLCall(glActiveTexture(GL_TEXTURE2));
+	GLCall(glActiveTexture(GL_TEXTURE31));
 	glBindTexture(GL_TEXTURE_2D, renderedTexture);
 
 	// Give an empty image to OpenGL ( the last "0" )
@@ -86,7 +86,7 @@ void FrameBuffer::resize(int x,int y)
 	glGenTextures(1, &renderedTexture);
 
 	// "Bind" the newly created texture : all future texture functions will modify this texture*/
-	GLCall(glActiveTexture(GL_TEXTURE2));
+	GLCall(glActiveTexture(GL_TEXTURE31));
 	glBindTexture(GL_TEXTURE_2D, renderedTexture);
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);

@@ -18,7 +18,7 @@ void Window::Init(int width,int height)
 	_window = glfwCreateWindow(width, height, "Lithium", NULL, NULL);
 
 	glfwMakeContextCurrent(_window);
-	glfwSwapInterval(1);
+	
 }
 
 void Window::Run()

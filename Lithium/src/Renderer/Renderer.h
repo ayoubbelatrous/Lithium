@@ -1,7 +1,11 @@
 #pragma once
 #include "GL/glew.h"
+#include <iostream>
+#include "GL/glew.h"
 #include "glm/glm.hpp"
-
+#include <glm/gtc/type_ptr.hpp>
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtx/matrix_decompose.hpp"
 
 #define ASSERT(x) \
 	if (!(x))\
@@ -30,6 +34,7 @@ namespace Renderer{
 
 	static void Draw(int count)
 	{
+		
 		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
 	}
 
@@ -37,4 +42,13 @@ namespace Renderer{
 }
 
 
-
+namespace Renderer2D
+{
+	void Init();
+	void StartBatch();
+	void NextBatch();
+	void BeginScene(glm::mat4 proj, glm::mat4 view);
+	void EndScene();
+	void Flush();
+	void DrawQuad(const glm::mat4& transform, const glm::vec4& color);
+}

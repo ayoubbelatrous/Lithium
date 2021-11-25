@@ -1,5 +1,5 @@
 #pragma once
-#include "Renderer.h"
+
 #include <string>
 class Texture
 {
@@ -11,11 +11,11 @@ private:
 	int _BPP;
 public:
 	Texture(const std::string& path);
-	Texture(int width, int height, int channels,int colormode, int colormode2);
+	Texture(int width, int height);
 	Texture(){}
 	~Texture();
-	void Bind() const;
+	void Bind(unsigned int slot = 0) const;
 	void UnBind() const;
 	unsigned int GetID() const;
-
+	void SetData(void* data);
 };

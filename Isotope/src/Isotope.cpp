@@ -5,8 +5,10 @@ void isotope::Init()
 {
 
 	scene = CreateRef<Scene>();
+	entity = scene->CreateEntity();
+	entity.AddComponent<TransformComponent>();
 	ImGui::CreateContext();
-
+	glfwSwapInterval(0);
 
 	ImGuiIO& io = ImGui::GetIO();
 
@@ -84,7 +86,7 @@ void isotope::Init()
 		0.5f ,0.5f ,1.0f, 1.0f,
 		-0.5f,0.5f ,0.0f, 1.0f,
 	};*/
-
+	/*
 	float positions[] = {
 	  -0.5f, -0.5f, 0.0f, 0.0f, // 0
 	   0.5f, -0.5f, 1.0f, 0.0f, // 1
@@ -104,7 +106,10 @@ void isotope::Init()
 
 	buf = CreateRef<VertexBuffer>(positions, sizeof(positions));
 	ibuf = CreateRef<IndexBuffer>(index,sizeof(index) / 4);
-	tex = CreateRef<Texture>("src/images/check.png");
+	tex = CreateRef<Texture>(1,1);
+	unsigned int white = 0xffffffff;
+
+	tex->SetData(&white);
 	va->Bind();
 	
 	
@@ -119,22 +124,11 @@ void isotope::Init()
 
 	
 	view = glm::translate(glm::mat4(1), glm::vec3(0));
-	model = glm::translate(glm::mat4(1), glm::vec3(0));
-	
+	shader->SetUniform1i("u_texture", 0);*/
 
-	
-	
-	shader->SetUniform1i("u_texture", 0);
-	
-	Entity entity = scene->CreateEntity();
-	entity.AddComponent<TransformComponent>(glm::mat4(1));
-
-	if (entity.HasComponent<TransformComponent>())
-	{
-		glm::mat4& t = entity.GetComponent<TransformComponent>()._transform;
-		
-		std::cout << "got entt" << std::endl;
-	}
+	Renderer2D::Init();
+	fb = Lithium::CreateRef<FrameBuffer>();
+	fb->Bind();
 }
 
 void isotope::Render()
@@ -147,29 +141,36 @@ void isotope::Render()
 	float orthoBottom = -size * 0.5f;
 	float orthoTop = size * 0.5f;
 
-	proj = glm::ortho(orthoLeft, orthoRight, orthoBottom, orthoTop);
-	MVP = proj * view * model;
-
-	fb->Bind();
-	
-	
-	Renderer::ClearColor(glm::vec4(0.2, 0.2, 0.5, 1.0));
-	Renderer::Clear();
 
 	if (prevsize.x != width || prevsize.y != height)
 	{
-		fb->resize(width / 2, height / 2);
+		fb->resize(width, height);
 		prevsize = ImVec2(width, height);
 	}
+
+	proj = glm::ortho(orthoLeft, orthoRight, orthoBottom, orthoTop);
+	MVP = proj * view * entity.GetComponent<TransformComponent>().GetMatrix();
+
+	fb->Bind();
+	Renderer2D::BeginScene(proj, view);
+
+	Renderer::ClearColor(glm::vec4(0.2, 0.2, 0.5, 1.0));
+	Renderer::Clear();
+
+	/*
 	shader->Bind();
 	shader->SetUniformMat4f("MVP", MVP);
 	shader->SetUniform4f("u_color", glm::vec4(1));
-	tex->Bind();
+	tex->Bind(20);
 	va->Bind();
 	ibuf->Bind();
+	*/
 
+	
+	Renderer2D::DrawQuad(entity.GetComponent<TransformComponent>().GetMatrix(), glm::vec4(0.5));
 
-	Renderer::Draw(6);
+	
+    Renderer2D::EndScene();
 	fb->UnBind();
 }
 
@@ -232,26 +233,25 @@ void isotope::UIrender()
 	ImGui::End();
 
 
-	
-	ImGui::Begin("hi");
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0,0 });
+	ImGui::Begin("Scene");
 	ImVec2 vec = ImGui::GetContentRegionAvail();
 	width = vec.x;
 	height = vec.y;
 
-
-	
 	ImGui::Image((void*)(intptr_t)fb->GetColorAttachmentID(), ImVec2{vec.x,vec.y});
 	ImGui::End();
 
 
 	ImGui::Begin("Stats");
 	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+
+	ImGui::DragFloat3("Position", glm::value_ptr(entity.GetComponent<TransformComponent>().Position),0.01f);
+	ImGui::DragFloat3("Rotation", glm::value_ptr(entity.GetComponent<TransformComponent>().Rotation), 0.01f);
+	ImGui::DragFloat3("Scale", glm::value_ptr(entity.GetComponent<TransformComponent>().Scale), 0.01f);
+
 	ImGui::End();
-
-
-
-
-
+	ImGui::PopStyleVar();
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	

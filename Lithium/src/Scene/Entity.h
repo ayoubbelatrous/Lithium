@@ -6,6 +6,7 @@ class Entity{
 private:
 	entt::entity _handle;
 public:
+	Entity() = default;
 	Entity(const entt::entity& handle, Scene* scene);
 	Entity(const Entity& other) = default;
 	

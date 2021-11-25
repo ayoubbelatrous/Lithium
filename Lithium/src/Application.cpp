@@ -17,6 +17,12 @@ void Application::Init()
 
 
 	std::cout << glGetString(GL_VERSION) << std::endl;
+	int texture_units;
+	glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &texture_units);
+	std::cout << texture_units << std::endl;
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_FRONT);
+	glFrontFace(GL_CW);
 }
 void Application::Render()
 {

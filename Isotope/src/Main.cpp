@@ -6,6 +6,7 @@ int main(void)
 	Application app;
 	app.Init();
 	iso.SetWindow(app.GetWindow());
+	
 	iso.Init();
 
 	while (!app.shouldClose())
@@ -18,5 +19,5 @@ int main(void)
 
 	app.Delete();
 	iso.Delete();
-
+	return 0;
 }

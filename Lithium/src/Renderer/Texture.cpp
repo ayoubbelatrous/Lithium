@@ -1,5 +1,11 @@
 #include "Texture.h"
 #include "../vendor/stb/stb_image.h"
+#include "Renderer.h"
+
+
+
+
+
 Texture::Texture(const std::string& path)
 {
 	stbi_set_flip_vertically_on_load(1);
@@ -16,11 +22,10 @@ Texture::Texture(const std::string& path)
 	stbi_image_free(_localBuffer);
 }
 
-Texture::Texture(int width, int height, int channels,int colormode, int colormode2)
+Texture::Texture(int width, int height)
 {
 	_width = width;
 	_height = height;
-	_BPP = channels;
 	_localBuffer = nullptr;
 	GLCall(glGenTextures(1, &_id));
 	GLCall(glBindTexture(GL_TEXTURE_2D, _id));
@@ -29,7 +34,7 @@ Texture::Texture(int width, int height, int channels,int colormode, int colormod
 	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
 	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
-	GLCall(glTexImage2D(GL_TEXTURE_2D, 0, colormode, _width, _height, 0, colormode2, GL_UNSIGNED_BYTE, NULL));
+	GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _width, _height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL));
 
 }
 
@@ -38,9 +43,9 @@ Texture::~Texture()
 	GLCall(glDeleteTextures(1, &_id));
 }
 
-void Texture::Bind() const
+void Texture::Bind(unsigned int slot) const
 {
-	GLCall(glActiveTexture(GL_TEXTURE0));
+	GLCall(glActiveTexture(GL_TEXTURE0 + slot));
 	GLCall(glBindTexture(GL_TEXTURE_2D, _id));
 }
 
@@ -52,4 +57,10 @@ void Texture::UnBind() const
 unsigned int Texture::GetID() const
 {
 	return _id;
+}
+
+void Texture::SetData(void* data)
+{
+	Bind();
+	glTextureSubImage2D(_id, 0, 0, 0, _width, _height, GL_RGBA, GL_UNSIGNED_BYTE, data);
 }
