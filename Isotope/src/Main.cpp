@@ -16,8 +16,10 @@ int main(void)
 		iso.UIrender();
 		app.Render();
 	}
-
+	
 	app.Delete();
 	iso.Delete();
+	std::cout << " running" << std::endl;
 	return 0;
+	exit(0);
 }

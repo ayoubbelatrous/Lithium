@@ -7,6 +7,8 @@
 #include "Scene/Scene.h"
 #include "Scene/Entity.h"
 #include "Scene/Components.h"
+#include "Renderer/Texture.h"
+#include "Panels/ScenePyramid.h"
 
 
 using namespace Lithium;
@@ -43,4 +45,17 @@ public:
 	Ref<Scene> scene;
 	Entity entity;
 	Entity entity2;
+
+
+
+	ImVec2 m_ViewportBounds[2];
+	glm::vec2 viewportSize;
+	glm::mat4 matrix;
+
+	float size = 5;
+	float zoomStep;
+
+
+	ScenePyramid scenePyramid;
+
 };

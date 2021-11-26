@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include "../Lithium.h"
 class Texture
 {
 private:
@@ -18,4 +19,5 @@ public:
 	void UnBind() const;
 	unsigned int GetID() const;
 	void SetData(void* data);
+	static Lithium::Ref<Texture> Create(int width,int height);
 };

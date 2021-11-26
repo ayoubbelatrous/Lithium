@@ -1,5 +1,4 @@
 #pragma once
-#include "Texture.h"
 
 
 class FrameBuffer
@@ -7,7 +6,6 @@ class FrameBuffer
 private:
 	unsigned int _id;
 	unsigned int _rbid;
-	Texture _texture;
 	int width;
 	int height;
 	unsigned int renderedTexture;

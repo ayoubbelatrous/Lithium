@@ -4,7 +4,6 @@
 #include "Renderer/VertexBuffer.h"
 #include "Renderer/IndexBuffer.h"
 #include "Renderer/VertexArray.h"
-#include "Renderer/Texture.h"
 #include "imgui/imgui.h"
 #include "glm/glm.hpp"
 #include <glm/gtc/type_ptr.hpp>

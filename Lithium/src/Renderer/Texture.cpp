@@ -1,10 +1,6 @@
 #include "Texture.h"
 #include "../vendor/stb/stb_image.h"
-#include "Renderer.h"
-
-
-
-
+#include "GL/glew.h"
 
 Texture::Texture(const std::string& path)
 {
@@ -64,3 +60,9 @@ void Texture::SetData(void* data)
 	Bind();
 	glTextureSubImage2D(_id, 0, 0, 0, _width, _height, GL_RGBA, GL_UNSIGNED_BYTE, data);
 }
+
+Lithium::Ref<Texture> Texture::Create(int width, int height)
+{
+	return Lithium::CreateRef<Texture>(width, height);
+}
+

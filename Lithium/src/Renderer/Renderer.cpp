@@ -33,6 +33,8 @@ struct QuadVertex
 {
 	glm::vec3 pos;
 	glm::vec4 color;
+	glm::vec2 texCourd;
+	float texSlotIndex;
 };
 
 struct Renderer2DSpecs
@@ -40,7 +42,7 @@ struct Renderer2DSpecs
 	static const int maxQuads = 1000;
 	static const uint32_t maxVertices = maxQuads * 4;
 	static const uint32_t maxIndices = maxQuads * 6;
-	static const uint32_t MaxTextureSlots = 32; // TODO: RenderCaps
+	static const uint32_t MaxTextureSlots = 18; // TODO: RenderCaps
 
 
 	Lithium::Ref<VertexArray> vertexArray;
@@ -74,6 +76,8 @@ static Renderer2DSpecs data;
 		data.layout = Lithium::CreateRef<VertexBufferLayout>();
 		data.layout->Push<float>(3);
 		data.layout->Push<float>(4);
+		data.layout->Push<float>(2);
+		data.layout->Push<float>(1);
 		data.vertexArray->AddBuffer(*data.vertexBuffer, *data.layout);
 		data.QuadVertexBufferBase = new QuadVertex[data.maxVertices];
 
@@ -98,7 +102,7 @@ static Renderer2DSpecs data;
 		data.quadIB = Lithium::CreateRef<IndexBuffer>(quadIndices, data.maxIndices);
 		delete[] quadIndices;
 
-		data.WhiteTexture = Lithium::CreateRef<Texture>(1, 1);
+		data.WhiteTexture = Texture::Create(1, 1);
 		unsigned int white = 0xfff;
 		data.WhiteTexture->SetData(&white);
 
@@ -189,11 +193,10 @@ static Renderer2DSpecs data;
 		{
 			data.QuadVertexBufferPtr->pos = transform * data.QuadVertexPositions[i];
 			data.QuadVertexBufferPtr->color = color;
+			data.QuadVertexBufferPtr->texCourd = textureCoords[i];
+			data.QuadVertexBufferPtr->texSlotIndex = textureIndex;
 			data.QuadVertexBufferPtr++;
 		}
 
 		data.QuadIndexCount += 6;
-	}
-
-
-
+}

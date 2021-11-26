@@ -1,9 +1,17 @@
 #include "isotope.h"
+#include "imguizmo/ImGuizmo.h"
 
+
+
+static double offset;
+void ScrollCalback(GLFWwindow* window, double xoffset, double yoffset)
+{
+	offset = yoffset;
+}
 
 void isotope::Init()
 {
-
+	scenePyramid.Init();
 	scene = CreateRef<Scene>();
 	entity = scene->CreateEntity();
 	entity2 = scene->CreateEntity();
@@ -14,7 +22,7 @@ void isotope::Init()
 	entity.AddComponent<TagComponent>("hi");
 	ImGui::CreateContext();
 	glfwSwapInterval(0);
-
+	glfwSetScrollCallback(wind, ScrollCalback);
 	ImGuiIO& io = ImGui::GetIO();
 
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
@@ -134,13 +142,17 @@ void isotope::Init()
 	Renderer2D::Init();
 	fb = Lithium::CreateRef<FrameBuffer>();
 	fb->Bind();
+	zoomStep = 0.25f;
 }
 
 void isotope::Render()
 {	
 
+	
 	float aspect = width / height;
-	float size = 5;
+	
+	size += offset * zoomStep * -1;
+	offset = 0;
 	float orthoLeft = -size * aspect * 0.5f;
 	float orthoRight = size * aspect * 0.5f;
 	float orthoBottom = -size * 0.5f;
@@ -152,7 +164,7 @@ void isotope::Render()
 		fb->resize(width, height);
 		prevsize = ImVec2(width, height);
 	}
-
+	
 	proj = glm::ortho(orthoLeft, orthoRight, orthoBottom, orthoTop);
 	MVP = proj * view * entity.GetComponent<TransformComponent>().GetMatrix();
 
@@ -161,21 +173,7 @@ void isotope::Render()
 	Renderer::Clear();
 	Renderer2D::BeginScene(proj, view);
 
-	
-
-	/*
-	shader->Bind();
-	shader->SetUniformMat4f("MVP", MVP);
-	shader->SetUniform4f("u_color", glm::vec4(1));
-	tex->Bind(20);
-	va->Bind();
-	ibuf->Bind();
-	*/
-
-	
-	Renderer2D::DrawQuad(entity.GetComponent<TransformComponent>().GetMatrix(), glm::vec4(0.1));
-	Renderer2D::DrawQuad(entity2.GetComponent<TransformComponent>().GetMatrix(), glm::vec4(0.5));
-
+	Renderer2D::DrawQuad(entity.GetComponent<TransformComponent>().GetMatrix(), glm::vec4(1.0, 0.0, 0.0, 1.0));
 	
     Renderer2D::EndScene();
 	fb->UnBind();
@@ -183,7 +181,7 @@ void isotope::Render()
 
 void isotope::Delete()
 {
-
+	
 }
 
 void isotope::UIrender()
@@ -191,7 +189,7 @@ void isotope::UIrender()
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
-
+	
 
 	static bool opt_fullscreen = true;
 	static bool opt_padding = false;
@@ -246,7 +244,39 @@ void isotope::UIrender()
 	width = vec.x;
 	height = vec.y;
 
-	ImGui::Image((void*)(intptr_t)fb->GetColorAttachmentID(), ImVec2{vec.x,vec.y});
+
+
+
+	viewportSize = glm::vec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y);
+
+
+	ImGui::Image((void*)(intptr_t)fb->GetColorAttachmentID(), ImVec2(viewportSize.x, viewportSize.y), ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+
+	ImVec2 viewportMinRegion = ImGui::GetWindowContentRegionMin();
+	ImVec2 viewportMaxRegion = ImGui::GetWindowContentRegionMax();
+	ImVec2 viewportOffset = ImGui::GetWindowPos();
+	m_ViewportBounds[0] = { viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y };
+	m_ViewportBounds[1] = { viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y };
+
+
+
+	glm::mat4 _view = view;
+	glm::mat4 _proj = proj;
+	matrix = entity.GetComponent<TransformComponent>().GetMatrix();
+
+
+	ImGuizmo::SetOrthographic(true);
+	ImGuizmo::SetDrawlist();
+
+	ImGuizmo::SetRect(m_ViewportBounds[0].x, m_ViewportBounds[0].y, m_ViewportBounds[1].x - m_ViewportBounds[0].x, m_ViewportBounds[1].y - m_ViewportBounds[0].y);
+	ImGuizmo::Manipulate(glm::value_ptr(_view), glm::value_ptr(_proj),
+		(ImGuizmo::OPERATION)ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::WORLD, glm::value_ptr(matrix));
+
+	if (ImGuizmo::IsUsing())
+	{
+		entity.GetComponent<TransformComponent>().Position = matrix[3];
+	}
+
 	ImGui::End();
 
 
@@ -266,6 +296,11 @@ void isotope::UIrender()
 
 	ImGui::End();
 	ImGui::PopStyleVar();
+
+	scenePyramid.RenderUI();
+	
+
+
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	
@@ -278,7 +313,4 @@ void isotope::UIrender()
 		glfwMakeContextCurrent(backup_current_context);
 	}
 
-
-
 }
-

@@ -167,9 +167,11 @@
   <ItemGroup>
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Isotope.cpp" />
+    <ClCompile Include="src\Panels\ScenePyramid.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\isotope.h" />
+    <ClInclude Include="src\Panels\ScenePyramid.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

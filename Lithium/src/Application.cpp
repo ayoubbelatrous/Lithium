@@ -15,7 +15,9 @@ void Application::Init()
 	_window.Init(500,500);
 	glewInit();
 
-
+	glfwWindowHint(GLFW_SAMPLES, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	std::cout << glGetString(GL_VERSION) << std::endl;
 	int texture_units;
 	glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &texture_units);
@@ -23,6 +25,11 @@ void Application::Init()
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_FRONT);
 	glFrontFace(GL_CW);
+
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 }
 void Application::Render()
 {
@@ -96,6 +103,8 @@ void Application::UIRender()
 void Application::Delete()
 {
 	glfwTerminate();
+	std::cout << "still running" << std::endl;
+
 }
 
 int Application::shouldClose() const
