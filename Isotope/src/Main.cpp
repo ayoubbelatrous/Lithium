@@ -11,7 +11,6 @@ int main(void)
 
 	while (!app.shouldClose())
 	{
-
 		iso.Render();
 		iso.UIrender();
 		app.Render();
@@ -21,5 +20,5 @@ int main(void)
 	iso.Delete();
 	std::cout << " running" << std::endl;
 	return 0;
-	exit(0);
+	
 }

@@ -57,5 +57,5 @@ public:
 
 
 	ScenePyramid scenePyramid;
-
+	Entity _selectedEntity;
 };

@@ -31,3 +31,21 @@ struct TagComponent
 		:Name(name)
 	{}
 };
+
+
+struct SpriteRendererComponent
+{
+	glm::vec4 Color;
+	SpriteRendererComponent() = default;
+	SpriteRendererComponent(const SpriteRendererComponent& other) = default;
+	SpriteRendererComponent(const glm::vec4& color)
+		:Color(color)
+	{
+	}
+
+	glm::vec4 GetColor() const
+	{
+		return Color;
+	}
+
+};

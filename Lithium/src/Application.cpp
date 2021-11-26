@@ -104,7 +104,7 @@ void Application::Delete()
 {
 	glfwTerminate();
 	std::cout << "still running" << std::endl;
-
+	exit(0);
 }
 
 int Application::shouldClose() const

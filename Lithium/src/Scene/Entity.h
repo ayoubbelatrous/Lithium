@@ -34,4 +34,18 @@ public:
 	{
 		_scene->_registry.emplace<T>(_handle,std::forward<Args>(args)...);
 	}
+
+
+
+	operator uint32_t() const { return (uint32_t)_handle; }
+
+	bool operator==(const Entity& other) const
+	{
+		return _handle == other._handle;
+	}
+
+	bool operator!=(const Entity& other) const
+	{
+		return !(*this == other);
+	}
 };

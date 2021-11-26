@@ -2,6 +2,7 @@
 #include "../Lithium.h"
 #include <entt.hpp>
 
+
 class Entity;
 class Scene
 {
@@ -15,6 +16,5 @@ public:
 	void onUpdate(double ts);
 	Entity CreateEntity();
 	entt::registry& GetReg();
-
 	friend class Entity;
 };

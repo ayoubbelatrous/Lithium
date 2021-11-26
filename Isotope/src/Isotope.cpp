@@ -11,15 +11,16 @@ void ScrollCalback(GLFWwindow* window, double xoffset, double yoffset)
 
 void isotope::Init()
 {
-	scenePyramid.Init();
+	
 	scene = CreateRef<Scene>();
+	scenePyramid.Init(scene);
 	entity = scene->CreateEntity();
 	entity2 = scene->CreateEntity();
-
+	scenePyramid.selection = entity;
 	entity.AddComponent<TransformComponent>();
 	entity2.AddComponent<TransformComponent>();
 	entity2.AddComponent<TagComponent>("hello");
-	entity.AddComponent<TagComponent>("hi");
+	entity.AddComponent<TagComponent>("lolo");
 	ImGui::CreateContext();
 	glfwSwapInterval(0);
 	glfwSetScrollCallback(wind, ScrollCalback);
@@ -36,7 +37,7 @@ void isotope::Init()
 	ImGui_ImplOpenGL3_Init("#version 330");
 	ImGuiStyle* style = &ImGui::GetStyle();
 
-
+	
 	style->WindowPadding = ImVec2(15, 15);
 	style->WindowRounding = 5.0f;
 	style->FramePadding = ImVec2(5, 5);
@@ -51,16 +52,16 @@ void isotope::Init()
 
 	style->Colors[ImGuiCol_Text] = ImVec4(1.0f, 1.0f, 1.0f, 1.00f);
 	style->Colors[ImGuiCol_TextDisabled] = ImVec4(0.24f, 0.23f, 0.29f, 1.00f);
-	style->Colors[ImGuiCol_WindowBg] = ImVec4(0.07f, 0.07f, 0.07f, 1.00f);
+	style->Colors[ImGuiCol_WindowBg] = ImVec4(0.05f, 0.05, 0.05, 1.00f);
 	style->Colors[ImGuiCol_PopupBg] = ImVec4(0.07f, 0.07f, 0.09f, 1.00f);
 	style->Colors[ImGuiCol_Border] = ImVec4(0.80f, 0.80f, 0.83f, 0.88f);
 	style->Colors[ImGuiCol_BorderShadow] = ImVec4(0.92f, 0.91f, 0.88f, 0.00f);
-	style->Colors[ImGuiCol_FrameBg] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
+	style->Colors[ImGuiCol_FrameBg] = ImVec4(0.12f, 0.12f, 0.12f, 1.00f);
 	style->Colors[ImGuiCol_FrameBgHovered] = ImVec4(0.24f, 0.23f, 0.29f, 1.00f);
 	style->Colors[ImGuiCol_FrameBgActive] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
-	style->Colors[ImGuiCol_TitleBg] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
+	style->Colors[ImGuiCol_TitleBg] = ImVec4(0.09f, 0.09f, 0.12f, 1.00f);
 	style->Colors[ImGuiCol_TitleBgCollapsed] = ImVec4(1.00f, 0.98f, 0.95f, 0.75f);
-	style->Colors[ImGuiCol_TitleBgActive] = ImVec4(0.0f, 0.294f, 0.42f,1.0f);
+	style->Colors[ImGuiCol_TitleBgActive] = ImVec4(0.25f, 0.25f, 0.25f,1.0f);
 	style->Colors[ImGuiCol_MenuBarBg] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
 	style->Colors[ImGuiCol_ScrollbarBg] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
 	style->Colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.80f, 0.80f, 0.83f, 0.31f);
@@ -73,7 +74,7 @@ void isotope::Init()
 	style->Colors[ImGuiCol_Button] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
 	style->Colors[ImGuiCol_ButtonHovered] = ImVec4(0.24f, 0.23f, 0.29f, 1.00f);
 	style->Colors[ImGuiCol_ButtonActive] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
-	style->Colors[ImGuiCol_Header] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
+	style->Colors[ImGuiCol_Header] = ImVec4(0.10f, 0.1f, 0.1f, 1.00f);
 	style->Colors[ImGuiCol_HeaderHovered] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
 	style->Colors[ImGuiCol_HeaderActive] = ImVec4(0.06f, 0.05f, 0.07f, 1.00f);
 	style->Colors[ImGuiCol_ResizeGrip] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
@@ -174,7 +175,8 @@ void isotope::Render()
 	Renderer2D::BeginScene(proj, view);
 
 	Renderer2D::DrawQuad(entity.GetComponent<TransformComponent>().GetMatrix(), glm::vec4(1.0, 0.0, 0.0, 1.0));
-	
+	Renderer2D::DrawQuad(entity2.GetComponent<TransformComponent>().GetMatrix(), glm::vec4(1.0, 0.0, 0.0, 1.0));
+
     Renderer2D::EndScene();
 	fb->UnBind();
 }
@@ -262,20 +264,24 @@ void isotope::UIrender()
 
 	glm::mat4 _view = view;
 	glm::mat4 _proj = proj;
-	matrix = entity.GetComponent<TransformComponent>().GetMatrix();
+	
+	glm::mat4 matri = scenePyramid.selection.GetComponent<TransformComponent>().GetMatrix();
 
-
+	ImGuizmo::SetGizmoSizeClipSpace(0.2f);
 	ImGuizmo::SetOrthographic(true);
 	ImGuizmo::SetDrawlist();
 
 	ImGuizmo::SetRect(m_ViewportBounds[0].x, m_ViewportBounds[0].y, m_ViewportBounds[1].x - m_ViewportBounds[0].x, m_ViewportBounds[1].y - m_ViewportBounds[0].y);
 	ImGuizmo::Manipulate(glm::value_ptr(_view), glm::value_ptr(_proj),
-		(ImGuizmo::OPERATION)ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::WORLD, glm::value_ptr(matrix));
+		(ImGuizmo::OPERATION)ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::WORLD, glm::value_ptr(matri));
 
 	if (ImGuizmo::IsUsing())
 	{
-		entity.GetComponent<TransformComponent>().Position = matrix[3];
+		
+		scenePyramid.selection.GetComponent<TransformComponent>().Position = matri[3];
+		
 	}
+
 
 	ImGui::End();
 
@@ -287,12 +293,6 @@ void isotope::UIrender()
 	ImGui::DragFloat3("Rotation", glm::value_ptr(entity.GetComponent<TransformComponent>().Rotation), 0.01f);
 	ImGui::DragFloat3("Scale", glm::value_ptr(entity.GetComponent<TransformComponent>().Scale), 0.01f);
 
-	scene->GetReg().each([&](auto entityID)
-	{
-		Entity ent{ entityID , scene.get() };
-		std::string& name = ent.GetComponent<TagComponent>().Name;
-		ImGui::Button(name.c_str());
-	});
 
 	ImGui::End();
 	ImGui::PopStyleVar();
