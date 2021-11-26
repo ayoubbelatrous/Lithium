@@ -153,7 +153,7 @@ static Renderer2DSpecs data;
 			data.slots[i]->Bind(i);
 		data.vertexArray->Bind();
 		data.textureShader->Bind();
-		data.textureShader->SetUniformMat4f("MVP", data.viewProjection);
+		data.textureShader->SetUniformMat4f("viewProjection", data.viewProjection);
 		data.quadIB->Bind();
 		Renderer::Draw(data.QuadIndexCount);
 	}

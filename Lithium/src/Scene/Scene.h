@@ -14,6 +14,7 @@ public:
 	~Scene();
 	void onUpdate(double ts);
 	Entity CreateEntity();
+	entt::registry& GetReg();
 
 	friend class Entity;
 };

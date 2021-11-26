@@ -6,7 +6,12 @@ void isotope::Init()
 
 	scene = CreateRef<Scene>();
 	entity = scene->CreateEntity();
+	entity2 = scene->CreateEntity();
+
 	entity.AddComponent<TransformComponent>();
+	entity2.AddComponent<TransformComponent>();
+	entity2.AddComponent<TagComponent>("hello");
+	entity.AddComponent<TagComponent>("hi");
 	ImGui::CreateContext();
 	glfwSwapInterval(0);
 
@@ -123,9 +128,9 @@ void isotope::Init()
 	shader->Bind();
 
 	
-	view = glm::translate(glm::mat4(1), glm::vec3(0));
+	
 	shader->SetUniform1i("u_texture", 0);*/
-
+	view = glm::translate(glm::mat4(1), glm::vec3(0));
 	Renderer2D::Init();
 	fb = Lithium::CreateRef<FrameBuffer>();
 	fb->Bind();
@@ -152,10 +157,11 @@ void isotope::Render()
 	MVP = proj * view * entity.GetComponent<TransformComponent>().GetMatrix();
 
 	fb->Bind();
-	Renderer2D::BeginScene(proj, view);
-
 	Renderer::ClearColor(glm::vec4(0.2, 0.2, 0.5, 1.0));
 	Renderer::Clear();
+	Renderer2D::BeginScene(proj, view);
+
+	
 
 	/*
 	shader->Bind();
@@ -167,7 +173,8 @@ void isotope::Render()
 	*/
 
 	
-	Renderer2D::DrawQuad(entity.GetComponent<TransformComponent>().GetMatrix(), glm::vec4(0.5));
+	Renderer2D::DrawQuad(entity.GetComponent<TransformComponent>().GetMatrix(), glm::vec4(0.1));
+	Renderer2D::DrawQuad(entity2.GetComponent<TransformComponent>().GetMatrix(), glm::vec4(0.5));
 
 	
     Renderer2D::EndScene();
@@ -249,6 +256,13 @@ void isotope::UIrender()
 	ImGui::DragFloat3("Position", glm::value_ptr(entity.GetComponent<TransformComponent>().Position),0.01f);
 	ImGui::DragFloat3("Rotation", glm::value_ptr(entity.GetComponent<TransformComponent>().Rotation), 0.01f);
 	ImGui::DragFloat3("Scale", glm::value_ptr(entity.GetComponent<TransformComponent>().Scale), 0.01f);
+
+	scene->GetReg().each([&](auto entityID)
+	{
+		Entity ent{ entityID , scene.get() };
+		std::string& name = ent.GetComponent<TagComponent>().Name;
+		ImGui::Button(name.c_str());
+	});
 
 	ImGui::End();
 	ImGui::PopStyleVar();

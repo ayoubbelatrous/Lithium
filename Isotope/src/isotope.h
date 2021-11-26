@@ -6,26 +6,7 @@
 #include "imgui/imgui_impl_opengl3.h"
 #include "Scene/Scene.h"
 #include "Scene/Entity.h"
-
-
-struct TransformComponent {
-
-	glm::vec3 Position;
-	glm::vec3 Rotation;
-	glm::vec3 Scale = {1,1,1};
-	TransformComponent() = default;
-	TransformComponent(const TransformComponent&) = default;
-
-	glm::mat4 GetMatrix() const
-	{
-		glm::mat4 rotation = glm::toMat4(glm::quat(Rotation));
-
-		return glm::translate(glm::mat4(1.0f), Position)
-			* rotation
-			* glm::scale(glm::mat4(1.0f), Scale);
-	}
-
-};
+#include "Scene/Components.h"
 
 
 using namespace Lithium;
@@ -61,5 +42,5 @@ public:
 	ImDrawData *data;
 	Ref<Scene> scene;
 	Entity entity;
-
+	Entity entity2;
 };

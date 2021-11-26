@@ -25,3 +25,8 @@ Scene::~Scene()
 {
 	
 }
+
+entt::registry& Scene::GetReg()
+{
+	return _registry;
+}
