@@ -30,6 +30,10 @@ struct TagComponent
 	TagComponent(const std::string& name)
 		:Name(name)
 	{}
+	std::string& GetName()
+	{
+		return Name;
+	}
 };
 
 

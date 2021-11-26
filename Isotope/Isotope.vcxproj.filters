@@ -24,12 +24,18 @@
     <ClCompile Include="src\Panels\ScenePyramid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Panels\Inspector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\isotope.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Panels\ScenePyramid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Panels\Inspector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

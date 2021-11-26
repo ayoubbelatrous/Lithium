@@ -9,6 +9,7 @@
 #include "Scene/Components.h"
 #include "Renderer/Texture.h"
 #include "Panels/ScenePyramid.h"
+#include "Panels/Inspector.h"
 
 
 using namespace Lithium;
@@ -57,5 +58,6 @@ public:
 
 
 	ScenePyramid scenePyramid;
+	Inspector inspector;
 	Entity _selectedEntity;
 };

@@ -28,15 +28,12 @@ layout(location = 0) out vec4 col;
 
 
 in vec4 Color;
-in vec4 texcoord;
+in vec2 texcoord;
 in float texindex;
 
 void main()
 {
 
-   
    col = Color;
-
-
 };
 

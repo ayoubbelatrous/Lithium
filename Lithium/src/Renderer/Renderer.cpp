@@ -26,9 +26,6 @@ bool LogGLCall(const char* name, const char* file, int line)
 	return true;
 }
 
-
-
-
 struct QuadVertex
 {
 	glm::vec3 pos;

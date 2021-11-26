@@ -14,12 +14,17 @@ void isotope::Init()
 	
 	scene = CreateRef<Scene>();
 	scenePyramid.Init(scene);
+	inspector.Init(scene);
 	entity = scene->CreateEntity();
 	entity2 = scene->CreateEntity();
+	
 	scenePyramid.selection = entity;
 	entity.AddComponent<TransformComponent>();
+	entity.AddComponent<SpriteRendererComponent>(glm::vec4(1.0));
+
 	entity2.AddComponent<TransformComponent>();
 	entity2.AddComponent<TagComponent>("hello");
+	entity2.AddComponent<SpriteRendererComponent>(glm::vec4(1.0));
 	entity.AddComponent<TagComponent>("lolo");
 	ImGui::CreateContext();
 	glfwSwapInterval(0);
@@ -49,10 +54,11 @@ void isotope::Init()
 	style->ScrollbarRounding = 9.0f;
 	style->GrabMinSize = 5.0f;
 	style->GrabRounding = 3.0f;
-
+	style->TabRounding = 3.0f;
+	
 	style->Colors[ImGuiCol_Text] = ImVec4(1.0f, 1.0f, 1.0f, 1.00f);
 	style->Colors[ImGuiCol_TextDisabled] = ImVec4(0.24f, 0.23f, 0.29f, 1.00f);
-	style->Colors[ImGuiCol_WindowBg] = ImVec4(0.05f, 0.05, 0.05, 1.00f);
+	style->Colors[ImGuiCol_WindowBg] = ImVec4(0.05f, 0.05, 0.05, 1.0f);
 	style->Colors[ImGuiCol_PopupBg] = ImVec4(0.07f, 0.07f, 0.09f, 1.00f);
 	style->Colors[ImGuiCol_Border] = ImVec4(0.80f, 0.80f, 0.83f, 0.88f);
 	style->Colors[ImGuiCol_BorderShadow] = ImVec4(0.92f, 0.91f, 0.88f, 0.00f);
@@ -62,7 +68,7 @@ void isotope::Init()
 	style->Colors[ImGuiCol_TitleBg] = ImVec4(0.09f, 0.09f, 0.12f, 1.00f);
 	style->Colors[ImGuiCol_TitleBgCollapsed] = ImVec4(1.00f, 0.98f, 0.95f, 0.75f);
 	style->Colors[ImGuiCol_TitleBgActive] = ImVec4(0.25f, 0.25f, 0.25f,1.0f);
-	style->Colors[ImGuiCol_MenuBarBg] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
+	style->Colors[ImGuiCol_MenuBarBg] = ImVec4(0.15f, 0.15f, 0.15f, 1.00f);
 	style->Colors[ImGuiCol_ScrollbarBg] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
 	style->Colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.80f, 0.80f, 0.83f, 0.31f);
 	style->Colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
@@ -74,8 +80,8 @@ void isotope::Init()
 	style->Colors[ImGuiCol_Button] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
 	style->Colors[ImGuiCol_ButtonHovered] = ImVec4(0.24f, 0.23f, 0.29f, 1.00f);
 	style->Colors[ImGuiCol_ButtonActive] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
-	style->Colors[ImGuiCol_Header] = ImVec4(0.10f, 0.1f, 0.1f, 1.00f);
-	style->Colors[ImGuiCol_HeaderHovered] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
+	style->Colors[ImGuiCol_Header] = ImVec4(0.1f, 0.1f, 0.1f, 1.00f);
+	style->Colors[ImGuiCol_HeaderHovered] = ImVec4(0.30f, 0.30f, 0.30f, 1.00f);
 	style->Colors[ImGuiCol_HeaderActive] = ImVec4(0.06f, 0.05f, 0.07f, 1.00f);
 	style->Colors[ImGuiCol_ResizeGrip] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
 	style->Colors[ImGuiCol_ResizeGripHovered] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
@@ -85,12 +91,11 @@ void isotope::Init()
 	style->Colors[ImGuiCol_PlotLinesHovered] = ImVec4(0.25f, 1.00f, 0.00f, 1.00f);
 	style->Colors[ImGuiCol_PlotHistogram] = ImVec4(0.40f, 0.39f, 0.38f, 0.63f);
 	style->Colors[ImGuiCol_PlotHistogramHovered] = ImVec4(0.25f, 1.00f, 0.00f, 1.00f);
-	style->Colors[ImGuiCol_TextSelectedBg] = ImVec4(0.25f, 1.00f, 0.00f, 0.43f);
+	style->Colors[ImGuiCol_TextSelectedBg] = ImVec4(0.45f, 0.45f, 0.45f, 0.43f);
 
 
-	io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Inter-VariableFont_slnt,wght.ttf", 15);
-
-
+	io.Fonts->AddFontFromFileTTF("src/Fonts/OpenSans-Regular.ttf", 18);
+	io.Fonts->AddFontFromFileTTF("src/Fonts/OpenSans-Bold.ttf", 18);
 	static ImGuiID dockspaceID = 0;
 
 
@@ -174,8 +179,10 @@ void isotope::Render()
 	Renderer::Clear();
 	Renderer2D::BeginScene(proj, view);
 
-	Renderer2D::DrawQuad(entity.GetComponent<TransformComponent>().GetMatrix(), glm::vec4(1.0, 0.0, 0.0, 1.0));
-	Renderer2D::DrawQuad(entity2.GetComponent<TransformComponent>().GetMatrix(), glm::vec4(1.0, 0.0, 0.0, 1.0));
+
+
+	Renderer2D::DrawQuad(entity.GetComponent<TransformComponent>().GetMatrix(), (entity.GetComponent<SpriteRendererComponent>().GetColor()));
+	Renderer2D::DrawQuad(entity2.GetComponent<TransformComponent>().GetMatrix(), (entity2.GetComponent<SpriteRendererComponent>().GetColor()));
 
     Renderer2D::EndScene();
 	fb->UnBind();
@@ -298,6 +305,8 @@ void isotope::UIrender()
 	ImGui::PopStyleVar();
 
 	scenePyramid.RenderUI();
+	inspector.SetSelection(scenePyramid.selection);
+	inspector.RenderUI();
 	
 
 
