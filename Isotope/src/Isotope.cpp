@@ -2,7 +2,6 @@
 #include "imguizmo/ImGuizmo.h"
 
 
-
 static double offset;
 void ScrollCalback(GLFWwindow* window, double xoffset, double yoffset)
 {
@@ -11,7 +10,7 @@ void ScrollCalback(GLFWwindow* window, double xoffset, double yoffset)
 
 void isotope::Init()
 {
-	
+
 	scene = CreateRef<Scene>();
 	scenePyramid.Init(scene);
 	inspector.Init(scene);
